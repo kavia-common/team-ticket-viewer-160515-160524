@@ -4,6 +4,7 @@ const healthService = require('../services/health');
 const teamsRouter = require('./teams');
 const ticketsRouter = require('./tickets');
 const adminRouter = require('./admin');
+const jiraTicketsRouter = require('./jiraTickets');
 
 const router = express.Router();
 
@@ -100,5 +101,6 @@ router.get('/health', healthController.check.bind(healthController));
 router.use('/api/teams', teamsRouter);
 router.use('/api/tickets', ticketsRouter);
 router.use('/api/admin', adminRouter);
+router.use('/api/jira-tickets', jiraTicketsRouter);
 
 module.exports = router;
