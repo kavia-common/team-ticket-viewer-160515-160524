@@ -161,4 +161,71 @@ router.get('/:teamId/members', TeamsController.getTeamMembers.bind(TeamsControll
  */
 router.get('/:teamId/tickets', TeamsController.getTeamTickets.bind(TeamsController));
 
+/**
+ * @swagger
+ * /api/teams/vymo/search:
+ *   post:
+ *     summary: Search Jira issues for Team Vymo using date range and optional filters
+ *     description: |
+ *       Executes a Jira search by combining a date range filter with optional JQL and basic field filters (project, assignee, status).
+ *       Returns a minimal array of issue summaries suitable for dashboard listing.
+ *     tags: [Tickets]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               start:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Inclusive start date of the range (e.g., 2024-04-01)
+ *               end:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Exclusive end date of the range (e.g., 2024-05-01)
+ *               dateField:
+ *                 type: string
+ *                 description: Date field to filter by (updated or created). Defaults to updated.
+ *                 example: updated
+ *               jql:
+ *                 type: string
+ *                 description: Additional JQL to AND with the date filter
+ *               project:
+ *                 type: string
+ *                 description: Optional Jira project key to constrain results
+ *                 example: DEMO
+ *               assignee:
+ *                 type: string
+ *                 description: Optional assignee displayName or accountId
+ *               status:
+ *                 type: string
+ *                 description: Optional status name (e.g., Done)
+ *             required:
+ *               - start
+ *               - end
+ *     responses:
+ *       200:
+ *         description: Array of issue summaries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   key:
+ *                     type: string
+ *                     description: Jira issue key
+ *                     example: DEMO-123
+ *                   summary:
+ *                     type: string
+ *                     description: Issue summary
+ *                   self:
+ *                     type: string
+ *                     description: API self URL for the issue
+ */
+router.post('/vymo/search', TeamsController.searchVymoIssues.bind(TeamsController));
+
 module.exports = router;
