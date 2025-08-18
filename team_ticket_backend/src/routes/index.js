@@ -4,6 +4,7 @@ const healthService = require('../services/health');
 const teamsRouter = require('./teams');
 const ticketsRouter = require('./tickets');
 const adminRouter = require('./admin');
+const jiraTicketsRouter = require('./jiraTickets');
 
 const router = express.Router();
 
@@ -96,9 +97,11 @@ router.get('/', (req, res, next) => {
  */
 router.get('/health', healthController.check.bind(healthController));
 
-// Mount feature routers
+/** Mount feature routers */
 router.use('/api/teams', teamsRouter);
 router.use('/api/tickets', ticketsRouter);
 router.use('/api/admin', adminRouter);
+/** New generic Jira search endpoints (e.g., /api/jira-tickets) */
+router.use('/api', jiraTicketsRouter);
 
 module.exports = router;
