@@ -1,14 +1,30 @@
 const express = require('express');
 const healthController = require('../controllers/health');
+const teamsRouter = require('./teams');
+const ticketsRouter = require('./tickets');
+const adminRouter = require('./admin');
 
 const router = express.Router();
-// Health endpoint
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Health
+ *     description: Service health monitoring
+ *   - name: Teams
+ *     description: Team selection and member information
+ *   - name: Tickets
+ *     description: Ticket retrieval and details
+ *   - name: Admin
+ *     description: Administrative actions like cache refresh
+ */
 
 /**
  * @swagger
  * /:
  *   get:
  *     summary: Health endpoint
+ *     tags: [Health]
  *     responses:
  *       200:
  *         description: Service health check passed
@@ -31,5 +47,10 @@ const router = express.Router();
  *                   example: development
  */
 router.get('/', healthController.check.bind(healthController));
+
+// Mount feature routers
+router.use('/api/teams', teamsRouter);
+router.use('/api/tickets', ticketsRouter);
+router.use('/api/admin', adminRouter);
 
 module.exports = router;

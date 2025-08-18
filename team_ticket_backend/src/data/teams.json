@@ -1,0 +1,12 @@
+[
+  {
+    "id": "alpha",
+    "name": "Alpha Team",
+    "jqlBase": "project = DEMO"
+  },
+  {
+    "id": "beta",
+    "name": "Beta Team",
+    "jqlBase": "project = TEST"
+  }
+]
