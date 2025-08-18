@@ -1,4 +1,8 @@
+const path = require('path');
 const swaggerJSDoc = require('swagger-jsdoc');
+
+// Resolve the routes glob relative to this file to avoid issues when process.cwd() differs
+const routesGlob = path.join(__dirname, 'src', 'routes', '**', '*.js');
 
 const options = {
   definition: {
@@ -15,7 +19,7 @@ const options = {
       { name: 'Admin', description: 'Administrative actions like cache refresh' }
     ]
   },
-  apis: ['./src/routes/**/*.js'], // Path to the API docs
+  apis: [routesGlob], // Path to the API docs
 };
 
 const swaggerSpec = swaggerJSDoc(options);
