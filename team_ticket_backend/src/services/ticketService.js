@@ -15,14 +15,18 @@ function mapIssue(issue) {
     status,
     issueType: fields.issuetype ? fields.issuetype.name : undefined,
     project: fields.project ? fields.project.key : undefined,
-    assignee: assignee ? {
-      accountId: assignee.accountId || null,
-      displayName: assignee.displayName || null,
-    } : null,
-    reporter: fields.reporter ? {
-      accountId: fields.reporter.accountId || null,
-      displayName: fields.reporter.displayName || null,
-    } : null,
+    assignee: assignee
+      ? {
+          accountId: assignee.accountId || null,
+          displayName: assignee.displayName || null,
+        }
+      : null,
+    reporter: fields.reporter
+      ? {
+          accountId: fields.reporter.accountId || null,
+          displayName: fields.reporter.displayName || null,
+        }
+      : null,
     updated: fields.updated,
   };
 }
@@ -31,8 +35,19 @@ function mapIssue(issue) {
 function buildJql(team, range, filters) {
   const parts = [];
 
-  if (team && team.jqlBase) {
-    parts.push(`(${team.jqlBase})`);
+  // Optional project scoping:
+  // - If team.jqlBase is provided (non-empty), use it as-is (backwards compatibility)
+  // - Else if team.project is provided and not "all", scope by project
+  // - Else no project filter (fetch across all accessible projects)
+  if (team) {
+    if (typeof team.jqlBase === 'string' && team.jqlBase.trim()) {
+      parts.push(`(${team.jqlBase.trim()})`);
+    } else if (typeof team.project === 'string') {
+      const project = team.project.trim();
+      if (project && project.toLowerCase() !== 'all') {
+        parts.push(`(project = ${project})`);
+      }
+    }
   }
 
   // Consider issues updated in the specified month
@@ -41,7 +56,7 @@ function buildJql(team, range, filters) {
   parts.push(`updated >= "${start}" AND updated < "${end}"`);
 
   if (filters.assignee) {
-    // Allow either accountId or displayName; prefer accountId if looks like one
+    // Allow either accountId or displayName; prefer accountId if it looks like one
     if (/^[a-zA-Z0-9:\-]{10,}$/.test(filters.assignee)) {
       parts.push(`assignee in ("${filters.assignee.replace(/"/g, '\\"')}")`);
     } else {
